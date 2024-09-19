@@ -1,42 +1,63 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* App.css */
+
+/* General Styling */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa; /* Light grey background */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+h2 {
+  color: #333;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Container Styling */
+.container {
+  padding: 20px;
+  margin-bottom: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.custom-table-wrapper {
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.custom-table {
+  width: 100%;
+  min-width: 600px; /* Minimum width for better appearance on mobile */
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.custom-table thead {
+  background-color: #343a40; /* Dark background for table header */
+  color: #ffffff;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .custom-table-wrapper {
+    overflow-x: auto; /* Ensure table can scroll horizontally */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
-  to {
-    transform: rotate(360deg);
+
+  .custom-table {
+    width: 100%; /* Use full width */
+    display: block; /* Required for the horizontal scroll */
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .custom-table th,
+  .custom-table td {
+    white-space: nowrap; /* Prevent text from wrapping in cells */
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
