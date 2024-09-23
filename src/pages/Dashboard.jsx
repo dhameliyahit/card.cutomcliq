@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '../components/header'
+import Header from '../components/Header.jsx'
 import SocialLinksForm from '../components/SocialLinkForm'
 
 const Dashboard = () => {
