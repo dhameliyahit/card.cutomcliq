@@ -4,26 +4,30 @@ import axios from 'axios';
 const SocialLinksForm = () => {
   const [selectedLinks, setSelectedLinks] = useState([]);
   const [formData, setFormData] = useState({});
+  const [errorMessages, setErrorMessages] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const socialPlatforms = [
-    { name: 'whatsapp', icon: 'bi-whatsapp' },
-    { name: 'facebook', icon: 'bi-facebook' },
-    { name: 'instagram', icon: 'bi-instagram' },
-    { name: 'mail', icon: 'bi-envelope' },
-    { name: 'linkedin', icon: 'bi-linkedin' },
-    { name: 'website', icon: 'bi-globe' }
+    { name: 'whatsapp', icon: 'bi-whatsapp', type: 'number' },
+    { name: 'facebook', icon: 'bi-facebook', type: 'url' },
+    { name: 'instagram', icon: 'bi-instagram', type: 'url' },
+    { name: 'mail', icon: 'bi-envelope', type: 'email' },
+    { name: 'linkedin', icon: 'bi-linkedin', type: 'url' },
+    { name: 'website', icon: 'bi-globe', type: 'url' }
   ];
 
   const handleSelectionChange = (platform) => {
     if (selectedLinks.includes(platform)) {
       // Unselect the platform
       setSelectedLinks(selectedLinks.filter(link => link !== platform));
-      // Remove from formData
+      // Remove from formData and errorMessages
       const updatedFormData = { ...formData };
+      const updatedErrorMessages = { ...errorMessages };
       delete updatedFormData[platform];
+      delete updatedErrorMessages[platform];
       setFormData(updatedFormData);
+      setErrorMessages(updatedErrorMessages);
     } else {
       // Select the platform
       setSelectedLinks([...selectedLinks, platform]);
@@ -35,9 +39,55 @@ const SocialLinksForm = () => {
       ...formData,
       [platform]: value
     });
+    // Remove any error messages when typing
+    setErrorMessages({
+      ...errorMessages,
+      [platform]: ''
+    });
+  };
+
+  const validateInput = () => {
+    let valid = true;
+    const errors = {};
+
+    selectedLinks.forEach((platform) => {
+      const inputType = socialPlatforms.find(p => p.name === platform)?.type;
+      const value = formData[platform];
+
+      if (!value) {
+        errors[platform] = `Please enter a value for ${platform}.`;
+        valid = false;
+      } else if (inputType === 'number' && (!/^\d{10}$/.test(value))) {
+        errors[platform] = `Please enter a valid 10-digit WhatsApp number.`;
+        valid = false;
+      } else if (inputType === 'url' && !isValidURL(value)) {
+        errors[platform] = `Please enter a valid URL for ${platform}.`;
+        valid = false;
+      } else if (inputType === 'email' && !isValidEmail(value)) {
+        errors[platform] = `Please enter a valid email address.`;
+        valid = false;
+      }
+    });
+
+    setErrorMessages(errors);
+    return valid;
+  };
+
+  const isValidURL = (url) => {
+    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+    return urlPattern.test(url);
+  };
+
+  const isValidEmail = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
   };
 
   const handleSubmit = async () => {
+    if (!validateInput()) {
+      return; // If validation fails, stop submission
+    }
+
     try {
       let ownerId = '';
       if (!localStorage.getItem('ownerId')) {
@@ -109,13 +159,18 @@ const SocialLinksForm = () => {
                   : `${platform.charAt(0).toUpperCase() + platform.slice(1)} Link`}
               </label>
               <input
-                type="text"
+                type={socialPlatforms.find(p => p.name === platform)?.type === 'number' ? 'text' : 'url'}
                 className="form-control"
                 id={`${platform}Input`}
-                placeholder={platform === 'whatsapp' ? 'Enter your WhatsApp number' : `Enter your ${platform}`}
+                placeholder={platform === 'whatsapp' ? 'Enter your 10-digit WhatsApp number' : `Enter your ${platform} link`}
                 value={formData[platform] || ''}
                 onChange={(e) => handleInputChange(platform, e.target.value)}
               />
+              {errorMessages[platform] && (
+                <div className="text-danger mt-1">
+                  {errorMessages[platform]}
+                </div>
+              )}
             </div>
           ))}
         </div>
