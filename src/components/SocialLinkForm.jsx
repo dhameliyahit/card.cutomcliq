@@ -31,10 +31,6 @@ const SocialLinksForm = () => {
   };
 
   const handleInputChange = (platform, value) => {
-    if (platform === 'whatsapp') {
-      // Format the WhatsApp number with the wa.me prefix
-      value = `https://wa.me/+91${value}`;
-    }
     setFormData({
       ...formData,
       [platform]: value
@@ -53,10 +49,16 @@ const SocialLinksForm = () => {
 
       setLoading(true);
 
+      // Prepare formData with the correct format for WhatsApp link
+      const formattedData = { ...formData };
+      if (formData.whatsapp) {
+        formattedData.whatsapp = `https://wa.me/+91${formData.whatsapp}`;
+      }
+
       // Make the API request to save the links
       const response = await axios.patch(
         `https://digital-business-card-backend-production.up.railway.app/api/links?ownerId=${ownerId}`,
-        { links: formData }
+        { links: formattedData }
       );
 
       if (response.data.success) {
