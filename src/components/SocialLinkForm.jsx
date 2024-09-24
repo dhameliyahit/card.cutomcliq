@@ -31,6 +31,10 @@ const SocialLinksForm = () => {
   };
 
   const handleInputChange = (platform, value) => {
+    if (platform === 'whatsapp') {
+      // Format the WhatsApp number with the wa.me prefix
+      value = `https://wa.me/+91${value}`;
+    }
     setFormData({
       ...formData,
       [platform]: value
