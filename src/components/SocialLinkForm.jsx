@@ -98,13 +98,15 @@ const SocialLinksForm = () => {
             <div key={platform} className="mb-3">
               <label className="form-label" htmlFor={`${platform}Input`}>
                 <i className={`bi ${socialPlatforms.find(p => p.name === platform)?.icon} me-2`}></i>
-                {platform.charAt(0).toUpperCase() + platform.slice(1)} Link
+                {platform === 'whatsapp'
+                  ? 'Enter your WhatsApp number'
+                  : `${platform.charAt(0).toUpperCase() + platform.slice(1)} Link`}
               </label>
               <input
                 type="text"
                 className="form-control"
                 id={`${platform}Input`}
-                placeholder={`Enter your ${platform} link`}
+                placeholder={platform === 'whatsapp' ? 'Enter your WhatsApp number' : `Enter your ${platform}`}
                 value={formData[platform] || ''}
                 onChange={(e) => handleInputChange(platform, e.target.value)}
               />
